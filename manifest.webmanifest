@@ -1,0 +1,10 @@
+{
+  "name": "Kalorien Tracker Plus",
+  "short_name": "Kalorien",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fbfafc",
+  "theme_color": "#f7f2fb",
+  "description": "Privater Kalorientracker mit 10-Tage-Verlauf, Online-Schätzung und lokalen Backups."
+}
