@@ -24,8 +24,15 @@ textarea{min-height:80px;resize:vertical}button{min-height:42px;border:1px solid
 .days{display:flex;gap:7px;overflow:auto;margin-top:11px}.days button{white-space:nowrap}.days .active{background:var(--lav);font-weight:750}
 .meal{border:1px solid var(--border);border-radius:14px;padding:11px;margin-top:9px}.mealTop{display:flex;justify-content:space-between;gap:10px}.mealName{font-weight:720}.meta{font-size:.78rem;color:var(--muted);margin-top:3px}.mealKcal{font-weight:750;white-space:nowrap}
 .qty{display:grid;grid-template-columns:38px minmax(66px,82px) 38px auto 42px 38px;gap:6px;align-items:center;margin-top:9px}.qty input{text-align:center;padding:8px}.tiny{min-height:38px;height:38px;padding:6px 9px}.apply{width:38px;min-width:38px;padding:0;background:#dff3e7;border-color:#c8e6d4;color:#2f7a4f;font-size:1.15rem;font-weight:800;border-radius:11px}.delete{width:38px;min-width:38px;padding:0;font-size:0}.delete::after{content:"×";font-size:1.25rem;line-height:1}
-.quick{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.quick button:nth-child(4n+1){background:var(--lav)}.quick button:nth-child(4n+2){background:var(--mint)}.quick button:nth-child(4n+3){background:var(--peach)}.quick button:nth-child(4n+4){background:var(--sky)}
-@media(max-width:740px){.wrap{padding:10px 10px 26px}.head{gap:8px}.badge{font-size:.74rem;padding:6px 8px}.stats{gap:6px}.stat{padding:9px 6px}.big{font-size:1.2rem}.card{padding:13px}.split{gap:7px}.qty{grid-template-columns:38px minmax(60px,78px) 38px minmax(42px,1fr) 38px 38px;gap:5px}.qty span{font-size:.78rem;overflow:hidden;text-overflow:ellipsis}.mealTop{gap:7px}.mealKcal{font-size:.92rem}.quick{gap:6px}.quick button{font-size:.82rem;padding:8px 9px;min-height:38px}}
+.quickList{display:grid;grid-template-columns:1fr;gap:7px;margin-top:10px}
+.quickItem{display:grid;grid-template-columns:minmax(0,1fr) 38px;gap:6px;align-items:center}
+.quickAdd{width:100%;text-align:left;min-height:42px;padding:9px 11px;border-radius:12px}
+.quickItem:nth-child(4n+1) .quickAdd{background:var(--lav)}
+.quickItem:nth-child(4n+2) .quickAdd{background:var(--mint)}
+.quickItem:nth-child(4n+3) .quickAdd{background:var(--peach)}
+.quickItem:nth-child(4n+4) .quickAdd{background:var(--sky)}
+.quickTrash{width:38px;min-width:38px;height:38px;min-height:38px;padding:0;border-radius:11px;background:var(--rose);color:#925c6a;font-size:1rem}
+@media(max-width:740px){.wrap{padding:10px 10px 26px}.head{gap:8px}.badge{font-size:.74rem;padding:6px 8px}.stats{gap:6px}.stat{padding:9px 6px}.big{font-size:1.2rem}.card{padding:13px}.split{gap:7px}.qty{grid-template-columns:38px minmax(60px,78px) 38px minmax(42px,1fr) 38px 38px;gap:5px}.qty span{font-size:.78rem;overflow:hidden;text-overflow:ellipsis}.mealTop{gap:7px}.mealKcal{font-size:.92rem}.quickList{gap:6px}.quickAdd{font-size:.82rem;min-height:40px;padding:8px 9px}.quickTrash{width:36px;min-width:36px;height:36px;min-height:36px}}
 </style>
 </head>
 <body><div class="wrap">
@@ -47,26 +54,53 @@ textarea{min-height:80px;resize:vertical}button{min-height:42px;border:1px solid
 <div id="msg" class="notice" style="display:none"></div><button id="add" class="primary" style="width:100%;margin-top:10px">Hinzufügen</button>
 </section></div>
 
+<section class="card" style="margin-top:12px">
+  <div class="row between">
+    <div>
+      <h2>Schnell hinzufügen</h2>
+      <div class="muted" style="font-size:.8rem;margin-top:3px">Häufige Einträge direkt antippen. Mit 🗑 kannst du einzelne Favoriten entfernen.</div>
+    </div>
+  </div>
+  <div id="quickList" class="quickList"></div>
+</section>
+
 <section class="card" style="margin-top:13px"><div class="row between"><div><h2>10 Tage Verlauf</h2><div id="dateLabel" class="muted" style="font-size:.82rem;margin-top:3px"></div></div><div class="row"><button id="export" class="peach">CSV herunterladen</button><button id="backup" class="sky">Backup JSON</button></div></div>
 <div id="days" class="days"></div><div class="stats"><div class="stat"><div class="small">Tagessumme</div><div id="dayTotal" class="big">0</div></div><div class="stat"><div class="small">Rest</div><div id="dayRest" class="big">1.700</div></div><div class="stat"><div class="small">Ø belegte Tage</div><div id="avg" class="big">0</div></div></div></section>
 
 <section class="card" style="margin-top:13px"><div class="row between"><div><h2>Mahlzeiten</h2><div class="muted" style="font-size:.81rem;margin-top:3px">Menge ändern: − / + oder Zahl eingeben und mit ✓ bestätigen.</div></div><button id="clear" class="danger">Backup & Tag leeren</button></div><div id="list"></div><div id="empty" class="notice" style="text-align:center;padding:16px">Noch keine Mahlzeit eingetragen.</div></section>
 
-<section class="card" style="margin-top:13px"><h2>Schnell hinzufügen</h2><div class="quick">
-<button class="q" data-n="Schwarzer Kaffee" data-k="2" data-u="Tasse" data-c="Getränk">Kaffee · 2</button>
-<button class="q" data-n="SHEKO Shake" data-k="215" data-u="Portion" data-c="Snack">SHEKO · 215</button>
-<button class="q" data-n="Armer Ritter" data-k="220" data-u="Scheibe" data-c="Snack">Armer Ritter · 220</button>
-<button class="q" data-n="Gin Tonic" data-k="110" data-u="Glas" data-c="Getränk">Gin Tonic · 110</button>
-<button class="q" data-n="Spaghetti Bolognese" data-k="650" data-u="Portion" data-c="Abendessen">Spaghetti Bolognese · ~650</button>
-<button class="q" data-n="Magerquark 0,2 %" data-k="67" data-u="100 g" data-c="Snack">Magerquark 100 g · 67</button>
-</div></section>
 </div>
 
 <script>
 (()=>{"use strict";
 const $=i=>document.getElementById(i),fmt=n=>Math.round(Number(n)||0).toLocaleString("de-DE"),num=v=>{const n=Number(String(v??"").trim().replace(",", "."));return Number.isFinite(n)?n:NaN},clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
-const KEY="kalorienTrackerPWA_v1";function iso(o=0){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-o);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}const ds=()=>Array.from({length:10},(_,i)=>iso(i));
+const KEY="kalorienTrackerPWA_v1",QUICK_KEY="kalorienTrackerQuick_v1";function iso(o=0){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-o);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}const ds=()=>Array.from({length:10},(_,i)=>iso(i));
 let state=(()=>{try{return JSON.parse(localStorage.getItem(KEY))||{goal:1700,days:{}}}catch(e){return{goal:1700,days:{}}}})(),selected=iso();
+const defaultQuick=[
+{name:"Schwarzer Kaffee",kcal:2,unit:"Tasse",category:"Getränk"},
+{name:"SHEKO Shake",kcal:215,unit:"Portion",category:"Snack"},
+{name:"Armer Ritter",kcal:220,unit:"Scheibe",category:"Snack"},
+{name:"Gin Tonic",kcal:110,unit:"Glas",category:"Getränk"},
+{name:"Spaghetti Bolognese",kcal:650,unit:"Portion",category:"Abendessen"},
+{name:"Magerquark 0,2 %",kcal:67,unit:"100 g",category:"Snack"}
+];
+let quickItems=(()=>{try{const q=JSON.parse(localStorage.getItem(QUICK_KEY));return Array.isArray(q)?q:defaultQuick}catch(e){return defaultQuick}})();
+function saveQuick(){localStorage.setItem(QUICK_KEY,JSON.stringify(quickItems))}
+function renderQuick(){
+ const box=document.getElementById("quickList"); if(!box)return;
+ box.innerHTML="";
+ if(!quickItems.length){
+   const empty=document.createElement("div");empty.className="notice";empty.textContent="Keine Schnell hinzufügen Einträge mehr gespeichert.";box.appendChild(empty);return;
+ }
+ quickItems.forEach((q,i)=>{
+   const row=document.createElement("div");row.className="quickItem";
+   const addBtn=document.createElement("button");addBtn.type="button";addBtn.className="quickAdd";addBtn.textContent=q.name+" · "+Math.round(q.kcal)+" kcal";
+   addBtn.onclick=()=>add(q.name,q.kcal,q.category,1,q.unit);
+   const trash=document.createElement("button");trash.type="button";trash.className="quickTrash";trash.textContent="🗑";trash.setAttribute("aria-label",q.name+" aus Schnell hinzufügen löschen");
+   trash.onclick=()=>{quickItems.splice(i,1);saveQuick();renderQuick()};
+   row.append(addBtn,trash);box.appendChild(row);
+ });
+}
 function save(){const keep={};ds().forEach(d=>keep[d]=state.days[d]||[]);state.days=keep;localStorage.setItem(KEY,JSON.stringify(state))}
 function arr(d=selected){return state.days[d]||(state.days[d]=[])}function lt(e){return(Number(e.qty)||0)*(Number(e.kcalEach)||0)}function total(d=selected){return arr(d).reduce((s,e)=>s+lt(e),0)}
 function fd(s,short=false){const[y,m,d]=s.split("-").map(Number),x=new Date(y,m-1,d,12);return new Intl.DateTimeFormat("de-DE",short?{day:"2-digit",month:"2-digit"}:{weekday:"long",day:"2-digit",month:"2-digit",year:"numeric"}).format(x)}
@@ -100,9 +134,9 @@ function render(){const g=Number(state.goal)||1700,e=total(),r=g-e,p=Math.round(
 function add(n,k,c,q,u){q=Math.max(.01,num(q)||1);k=Number(k);if(!n.trim()||!k)return false;arr().push({name:n.trim(),qty:q,unit:u,kcalEach:k/q,category:c});save();render();return true}
 function dl(name,text,type="text/csv"){const b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 function csv(one=null){const rows=[["Datum","Kategorie","Mahlzeit","Menge","Einheit","Kalorien"]],list=one?[one]:ds().slice().reverse();list.forEach(d=>(state.days[d]||[]).forEach(e=>rows.push([d,e.category,e.name,e.qty,e.unit,Math.round(lt(e))])));return"\uFEFF"+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\r\n")}
-$("goal").onchange=e=>{state.goal=clamp(Number(e.target.value)||1700,800,5000);save();render()};$("estimate").onclick=estimate;$("add").onclick=()=>{if(!add($("text").value,$("kcal").value,$("cat").value,$("amount").value,$("unit").value))return msg("Bitte Mahlzeit und Kalorien eintragen.");$("text").value="";$("kcal").value="";$("amount").value="1";$("unit").value="Portion";$("estimateInfo").style.display="none"};document.querySelectorAll(".q").forEach(b=>b.onclick=()=>add(b.dataset.n,b.dataset.k,b.dataset.c,1,b.dataset.u));
+$("goal").onchange=e=>{state.goal=clamp(Number(e.target.value)||1700,800,5000);save();render()};$("estimate").onclick=estimate;$("add").onclick=()=>{if(!add($("text").value,$("kcal").value,$("cat").value,$("amount").value,$("unit").value))return msg("Bitte Mahlzeit und Kalorien eintragen.");$("text").value="";$("kcal").value="";$("amount").value="1";$("unit").value="Portion";$("estimateInfo").style.display="none"};
 $("export").onclick=()=>dl("kalorien-10-tage.csv",csv());$("backup").onclick=()=>dl("kalorien-backup.json",JSON.stringify({state,exportedAt:new Date().toISOString()},null,2),"application/json");$("clear").onclick=()=>{if(!arr().length)return;dl("kalorien-"+selected+".csv",csv(selected));setTimeout(()=>{if(confirm("Backup gespeichert. Tag leeren?")){state.days[selected]=[];save();render()}},120)};
-ds().forEach(d=>{if(!state.days[d])state.days[d]=[]});save();render();
+ds().forEach(d=>{if(!state.days[d])state.days[d]=[]});save();render();renderQuick();
 if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
 })();
 </script></body></html>
