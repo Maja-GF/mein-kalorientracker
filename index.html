@@ -1,142 +1,356 @@
 <!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#f7f2fb"><meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Kalorien"><link rel="manifest" href="./manifest.webmanifest">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f2fb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Kalorien">
+<link rel="apple-touch-icon" href="./icon-180.png">
+<link rel="manifest" href="./manifest.webmanifest">
 <title>Kalorien Tracker Plus</title>
 <style>
-:root{--bg:#fbfafc;--card:#fff;--text:#30323a;--muted:#747784;--border:#e8e3eb;--lav:#eee7f7;--mint:#e6f3ec;--peach:#f9ede4;--sky:#e7f2f8;--rose:#f6e8ed}
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(#faf6fc,#fbfcfb);color:var(--text)}
-.wrap{max-width:760px;margin:auto;padding:12px 12px 28px}.head,.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.head{justify-content:space-between;align-items:flex-start}
-h1{font-size:1.42rem;margin:0 0 3px;line-height:1.18}h2{font-size:1.04rem;margin:0}.sub,.muted{color:var(--muted)}.sub{margin:0;font-size:.9rem}
-.grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}.card{background:#fff;border:1px solid var(--border);border-radius:17px;padding:14px;box-shadow:0 8px 24px rgba(70,55,85,.05)}
+:root{--bg:#fbfafc;--card:#fff;--text:#30323a;--muted:#747784;--border:#e8e3eb;--lav:#eee7f7;--mint:#e6f3ec;--peach:#f9ede4;--sky:#e7f2f8;--rose:#f6e8ed;--green:#dff3e7;--greenText:#2f7a4f}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(#faf6fc,#fbfcfb);color:var(--text);-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:auto;padding:calc(10px + env(safe-area-inset-top)) 10px calc(28px + env(safe-area-inset-bottom))}
+.head,.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.head{justify-content:space-between;align-items:center;margin-bottom:10px}
+h1{font-size:1.42rem;margin:0;line-height:1.18}h2{font-size:1.04rem;margin:0}.muted{color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr;gap:12px}.card{background:#fff;border:1px solid var(--border);border-radius:17px;padding:13px;box-shadow:0 8px 24px rgba(70,55,85,.05)}
 .goal{background:linear-gradient(145deg,#fff,#faf7fd)}.entry{background:linear-gradient(145deg,#fff,#f6fbf8)}
-.badge{background:var(--mint);padding:7px 10px;border-radius:999px;font-size:.8rem;font-weight:650}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}.stat{padding:10px;border-radius:14px;text-align:center}.stat:nth-child(1){background:var(--lav)}.stat:nth-child(2){background:var(--mint)}.stat:nth-child(3){background:var(--sky)}
-.big{font-size:1.35rem;font-weight:750}.small{font-size:.79rem;color:var(--muted)}.grow{flex:1;min-width:0}.between{justify-content:space-between}
-label{display:block;font-size:.86rem;font-weight:650;margin-top:10px}input,textarea,select,button{font:inherit}
+.badge{background:var(--mint);padding:6px 8px;border-radius:999px;font-size:.74rem;font-weight:650;white-space:nowrap}
+.datePill{display:inline-flex;align-items:center;gap:5px;margin-top:7px;padding:6px 9px;border-radius:999px;background:var(--peach);font-size:.78rem;color:#775d4e;font-weight:650}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}.stat{padding:9px 6px;border-radius:14px;text-align:center}.stat:nth-child(1){background:var(--lav)}.stat:nth-child(2){background:var(--mint)}.stat:nth-child(3){background:var(--sky)}
+.big{font-size:1.2rem;font-weight:750}.small{font-size:.76rem;color:var(--muted)}.grow{flex:1;min-width:0}.between{justify-content:space-between}
+label{display:block;font-size:.85rem;font-weight:650;margin-top:10px}input,textarea,select,button{font:inherit}
 input,textarea,select{width:100%;padding:10px;border:1px solid var(--border);border-radius:12px;background:white;color:var(--text);font-size:16px}
-textarea{min-height:80px;resize:vertical}button{min-height:42px;border:1px solid var(--border);border-radius:12px;padding:9px 12px;background:white;color:var(--text)}
-.primary{background:var(--lav);font-weight:750}.mint{background:var(--mint);color:#4d735f;font-weight:700}.sky{background:var(--sky);color:#4f7084;font-weight:700}.peach{background:var(--peach);color:#805e4b;font-weight:700}.danger{background:var(--rose);color:#925c6a}
-.split{display:grid;grid-template-columns:1fr 1fr;gap:9px}.bar{height:12px;background:#ece9ef;border-radius:99px;overflow:hidden;margin-top:12px}.bar>div{height:100%;background:linear-gradient(90deg,#b9a4cf,#9bc8b2);width:0%}
-.notice{font-size:.82rem;color:var(--muted);margin-top:8px;padding:9px 10px;border-radius:11px;background:#faf9fb}.estimateBox{display:none;background:var(--sky);color:#4f7084;line-height:1.4}
-.days{display:flex;gap:7px;overflow:auto;margin-top:11px}.days button{white-space:nowrap}.days .active{background:var(--lav);font-weight:750}
-.meal{border:1px solid var(--border);border-radius:14px;padding:11px;margin-top:9px}.mealTop{display:flex;justify-content:space-between;gap:10px}.mealName{font-weight:720}.meta{font-size:.78rem;color:var(--muted);margin-top:3px}.mealKcal{font-weight:750;white-space:nowrap}
-.qty{display:grid;grid-template-columns:38px minmax(66px,82px) 38px auto 42px 38px;gap:6px;align-items:center;margin-top:9px}.qty input{text-align:center;padding:8px}.tiny{min-height:38px;height:38px;padding:6px 9px}.apply{width:38px;min-width:38px;padding:0;background:#dff3e7;border-color:#c8e6d4;color:#2f7a4f;font-size:1.15rem;font-weight:800;border-radius:11px}.delete{width:38px;min-width:38px;padding:0;font-size:0}.delete::after{content:"×";font-size:1.25rem;line-height:1}
-.quickList{display:grid;grid-template-columns:1fr;gap:7px;margin-top:10px}
-.quickItem{display:grid;grid-template-columns:minmax(0,1fr) 38px;gap:6px;align-items:center}
-.quickAdd{width:100%;text-align:left;min-height:42px;padding:9px 11px;border-radius:12px}
-.quickItem:nth-child(4n+1) .quickAdd{background:var(--lav)}
-.quickItem:nth-child(4n+2) .quickAdd{background:var(--mint)}
-.quickItem:nth-child(4n+3) .quickAdd{background:var(--peach)}
-.quickItem:nth-child(4n+4) .quickAdd{background:var(--sky)}
-.quickTrash{width:38px;min-width:38px;height:38px;min-height:38px;padding:0;border-radius:11px;background:var(--rose);color:#925c6a;font-size:1rem}
-@media(max-width:740px){.wrap{padding:10px 10px 26px}.head{gap:8px}.badge{font-size:.74rem;padding:6px 8px}.stats{gap:6px}.stat{padding:9px 6px}.big{font-size:1.2rem}.card{padding:13px}.split{gap:7px}.qty{grid-template-columns:38px minmax(60px,78px) 38px minmax(42px,1fr) 38px 38px;gap:5px}.qty span{font-size:.78rem;overflow:hidden;text-overflow:ellipsis}.mealTop{gap:7px}.mealKcal{font-size:.92rem}.quickList{gap:6px}.quickAdd{font-size:.82rem;min-height:40px;padding:8px 9px}.quickTrash{width:36px;min-width:36px;height:36px;min-height:36px}}
+textarea{min-height:82px;resize:vertical}button{min-height:42px;border:1px solid var(--border);border-radius:12px;padding:9px 12px;background:white;color:var(--text);cursor:pointer}
+button:disabled{opacity:.55}.primary{background:var(--lav);font-weight:750}.mint{background:var(--mint);color:#4d735f;font-weight:700}.sky{background:var(--sky);color:#4f7084;font-weight:700}.peach{background:var(--peach);color:#805e4b;font-weight:700}.danger{background:var(--rose);color:#925c6a}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:7px}.bar{height:12px;background:#ece9ef;border-radius:99px;overflow:hidden;margin-top:12px}.bar>div{height:100%;background:linear-gradient(90deg,#b9a4cf,#9bc8b2);width:0%;transition:width .2s ease}
+.notice{font-size:.81rem;color:var(--muted);margin-top:8px;padding:9px 10px;border-radius:11px;background:#faf9fb}.estimateBox{display:none;background:var(--sky);color:#4f7084;line-height:1.45}.sourceLine{font-size:.76rem;margin-top:5px;opacity:.9}
+.days{display:flex;gap:7px;overflow:auto;margin-top:11px;padding-bottom:2px}.days button{white-space:nowrap}.days .active{background:var(--lav);font-weight:750}
+.meal{border:1px solid var(--border);border-radius:14px;padding:11px;margin-top:9px}.mealTop{display:flex;justify-content:space-between;gap:7px}.mealName{font-weight:720}.meta{font-size:.76rem;color:var(--muted);margin-top:3px}.mealKcal{font-weight:750;white-space:nowrap;font-size:.92rem}
+.qty{display:grid;grid-template-columns:38px minmax(60px,78px) 38px minmax(42px,1fr) 38px 38px;gap:5px;align-items:center;margin-top:9px}.qty input{text-align:center;padding:8px}.qty span{font-size:.78rem;overflow:hidden;text-overflow:ellipsis}
+.tiny{min-height:38px;height:38px;padding:6px 9px}.apply{width:38px;min-width:38px;padding:0;background:var(--green);border-color:#c8e6d4;color:var(--greenText);font-size:1.15rem;font-weight:800;border-radius:11px}.delete{width:38px;min-width:38px;padding:0;font-size:0}.delete::after{content:"×";font-size:1.25rem;line-height:1}
+.quickList{display:grid;grid-template-columns:1fr;gap:6px;margin-top:10px}.quickItem{display:grid;grid-template-columns:minmax(0,1fr) 36px;gap:6px;align-items:center}.quickAdd{width:100%;text-align:left;min-height:40px;padding:8px 9px;border-radius:12px;font-size:.82rem}.quickItem:nth-child(4n+1) .quickAdd{background:var(--lav)}.quickItem:nth-child(4n+2) .quickAdd{background:var(--mint)}.quickItem:nth-child(4n+3) .quickAdd{background:var(--peach)}.quickItem:nth-child(4n+4) .quickAdd{background:var(--sky)}.quickTrash{width:36px;min-width:36px;height:36px;min-height:36px;padding:0;border-radius:11px;background:var(--rose);color:#925c6a;font-size:1rem}
+.bottomActions{display:grid;gap:10px;margin-top:13px}.bottomActions button{width:100%}.footerSub{text-align:center;color:var(--muted);font-size:.76rem;line-height:1.4;padding:13px 8px 4px}.sourceNote{text-align:center;color:#8a8791;font-size:.7rem;line-height:1.35;padding:0 10px 4px}
+@media(min-width:620px){.quickList{grid-template-columns:1fr 1fr}.bottomActions{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body><div class="wrap">
-<div class="head"><div><h1>Kalorien Tracker Plus</h1><p class="sub">1.700 kcal · 10 Tage · deutsche Schätzung · EL/TL · offline speicherbar</p></div><div id="net" class="badge">● Internet bereit</div></div>
+<div class="head"><h1>Kalorien Tracker Plus</h1><div id="net" class="badge">● Internet bereit</div></div>
 
 <div class="grid">
 <section class="card goal">
-<div class="row between"><div><div class="small">Tagesziel</div><div><span id="goalText" class="big">1.700</span> kcal</div></div><div style="width:135px"><label style="margin-top:0">Ziel</label><input id="goal" type="number" min="800" max="5000" step="50" value="1700"></div></div>
-<div class="stats"><div class="stat"><div id="eaten" class="big">0</div><div class="small">gegessen</div></div><div class="stat"><div id="rest" class="big">1.700</div><div class="small">übrig</div></div><div class="stat"><div id="pct" class="big">0%</div><div class="small">verbraucht</div></div></div>
-<div class="bar"><div id="progress"></div></div><div id="status" class="notice">Du hast noch 1.700 kcal.</div>
-</section>
-
-<section class="card entry"><h2>Mahlzeit erfassen</h2>
-<label>Beschreibung</label><textarea id="text" placeholder="z. B. 180 g Hähnchenbrust mit 200 g Kartoffeln oder 1 Portion Spaghetti Bolognese"></textarea>
-<div class="split"><div><label>Menge</label><input id="amount" type="text" inputmode="decimal" value="1"></div><div><label>Einheit</label><select id="unit"><option>Portion</option><option>Stück</option><option>g</option><option>ml</option><option>EL</option><option>TL</option><option>Glas</option></select></div></div>
-<div class="row" style="margin-top:10px"><button id="estimate" class="mint" style="width:100%">🌐 Kalorien schätzen</button></div>
-<div id="estimateInfo" class="notice estimateBox"></div>
-<div class="split"><div><label>Kalorien gesamt</label><input id="kcal" type="number" min="0" max="15000"></div><div><label>Kategorie</label><select id="cat"><option>Frühstück</option><option>Mittagessen</option><option>Abendessen</option><option>Snack</option><option>Getränk</option></select></div></div>
-<div id="msg" class="notice" style="display:none"></div><button id="add" class="primary" style="width:100%;margin-top:10px">Hinzufügen</button>
-</section></div>
-
-<section class="card" style="margin-top:12px">
   <div class="row between">
     <div>
-      <h2>Schnell hinzufügen</h2>
-      <div class="muted" style="font-size:.8rem;margin-top:3px">Häufige Einträge direkt antippen. Mit 🗑 kannst du einzelne Favoriten entfernen.</div>
+      <div class="small">Tagesziel</div>
+      <div><span id="goalText" class="big">1.700</span> kcal</div>
+      <div id="goalDate" class="datePill">📅 Heute</div>
     </div>
+    <div style="width:128px"><label style="margin-top:0">Ziel</label><input id="goal" type="number" min="800" max="5000" step="50" value="1700"></div>
   </div>
+  <div class="stats">
+    <div class="stat"><div id="eaten" class="big">0</div><div class="small">gegessen</div></div>
+    <div class="stat"><div id="rest" class="big">1.700</div><div class="small">übrig</div></div>
+    <div class="stat"><div id="pct" class="big">0%</div><div class="small">verbraucht</div></div>
+  </div>
+  <div class="bar"><div id="progress"></div></div>
+  <div id="status" class="notice">Du hast noch 1.700 kcal.</div>
+</section>
+
+<section class="card entry">
+  <h2>Mahlzeit erfassen</h2>
+  <label>Beschreibung</label>
+  <textarea id="text" placeholder="z. B. 180 g Hähnchenbrust mit 200 g Kartoffeln oder SHEKO Kaffee 18 g mit 275 ml Milch 1,5 %"></textarea>
+  <div class="split">
+    <div><label>Menge</label><input id="amount" type="text" inputmode="decimal" value="1"></div>
+    <div><label>Einheit</label><select id="unit"><option>Portion</option><option>Stück</option><option>g</option><option>ml</option><option>EL</option><option>TL</option><option>Glas</option></select></div>
+  </div>
+  <div class="row" style="margin-top:10px"><button id="estimate" class="mint" style="width:100%">🌐 Kalorien schätzen</button></div>
+  <div id="estimateInfo" class="notice estimateBox"></div>
+  <div class="split">
+    <div><label>Kalorien gesamt</label><input id="kcal" type="number" min="0" max="15000"></div>
+    <div><label>Kategorie</label><select id="cat"><option>Frühstück</option><option>Mittagessen</option><option>Abendessen</option><option>Snack</option><option>Getränk</option></select></div>
+  </div>
+  <div id="msg" class="notice" style="display:none"></div>
+  <button id="add" class="primary" style="width:100%;margin-top:10px">Hinzufügen</button>
+</section>
+</div>
+
+<section class="card" style="margin-top:12px">
+  <h2>Schnell hinzufügen</h2>
+  <div class="muted" style="font-size:.8rem;margin-top:3px">Häufige Einträge antippen. 🗑 entfernt einen Favoriten.</div>
   <div id="quickList" class="quickList"></div>
 </section>
 
-<section class="card" style="margin-top:13px"><div class="row between"><div><h2>10 Tage Verlauf</h2><div id="dateLabel" class="muted" style="font-size:.82rem;margin-top:3px"></div></div><div class="row"><button id="export" class="peach">CSV herunterladen</button><button id="backup" class="sky">Backup JSON</button></div></div>
-<div id="days" class="days"></div><div class="stats"><div class="stat"><div class="small">Tagessumme</div><div id="dayTotal" class="big">0</div></div><div class="stat"><div class="small">Rest</div><div id="dayRest" class="big">1.700</div></div><div class="stat"><div class="small">Ø belegte Tage</div><div id="avg" class="big">0</div></div></div></section>
+<section class="card" style="margin-top:13px">
+  <div><h2>10 Tage Verlauf</h2><div id="dateLabel" class="muted" style="font-size:.82rem;margin-top:3px"></div></div>
+  <div id="days" class="days"></div>
+  <div class="stats">
+    <div class="stat"><div class="small">Tagessumme</div><div id="dayTotal" class="big">0</div></div>
+    <div class="stat"><div class="small">Rest</div><div id="dayRest" class="big">1.700</div></div>
+    <div class="stat"><div class="small">Ø belegte Tage</div><div id="avg" class="big">0</div></div>
+  </div>
+</section>
 
-<section class="card" style="margin-top:13px"><div class="row between"><div><h2>Mahlzeiten</h2><div class="muted" style="font-size:.81rem;margin-top:3px">Menge ändern: − / + oder Zahl eingeben und mit ✓ bestätigen.</div></div><button id="clear" class="danger">Backup & Tag leeren</button></div><div id="list"></div><div id="empty" class="notice" style="text-align:center;padding:16px">Noch keine Mahlzeit eingetragen.</div></section>
+<section class="card" style="margin-top:13px">
+  <div><h2>Mahlzeiten</h2><div class="muted" style="font-size:.81rem;margin-top:3px">Menge ändern: − / + oder Zahl eingeben und mit ✓ bestätigen.</div></div>
+  <div id="list"></div><div id="empty" class="notice" style="text-align:center;padding:16px">Noch keine Mahlzeit eingetragen.</div>
+</section>
 
+<div class="bottomActions">
+  <section class="card">
+    <h2>Backup & Export</h2>
+    <div class="muted" style="font-size:.8rem;margin:4px 0 9px">Daten unabhängig von der App auf dem iPhone sichern.</div>
+    <div class="row"><button id="export" class="peach grow">CSV herunterladen</button><button id="backup" class="sky grow">Backup JSON</button></div>
+  </section>
+  <section class="card">
+    <h2>Tag verwalten</h2>
+    <div class="muted" style="font-size:.8rem;margin:4px 0 9px">Löscht nur den aktuell ausgewählten Tag.</div>
+    <button id="clear" class="danger">Tag leeren</button>
+  </section>
+</div>
+
+<div id="footerSub" class="footerSub">1.700 kcal · 10 Tage · deutsche Schätzung · EL/TL · offline speicherbar</div>
+<div class="sourceNote">Schätzquellen: deutsche Referenzwerte nach BLS 4.0, Open Food Facts DE für Markenprodukte und offizielle SHEKO Nährwerte.</div>
 </div>
 
 <script>
 (()=>{"use strict";
-const $=i=>document.getElementById(i),fmt=n=>Math.round(Number(n)||0).toLocaleString("de-DE"),num=v=>{const n=Number(String(v??"").trim().replace(",", "."));return Number.isFinite(n)?n:NaN},clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
-const KEY="kalorienTrackerPWA_v1",QUICK_KEY="kalorienTrackerQuick_v1";function iso(o=0){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-o);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}const ds=()=>Array.from({length:10},(_,i)=>iso(i));
+const $=i=>document.getElementById(i),fmt=n=>Math.round(Number(n)||0).toLocaleString("de-DE");
+const num=v=>{const n=Number(String(v??"").trim().replace(",", "."));return Number.isFinite(n)?n:NaN};
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const clean=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ß/g,"ss").replace(/[^a-z0-9%+.,\s-]/g," ").replace(/\s+/g," ").trim();
+const KEY="kalorienTrackerPWA_v1",QUICK_KEY="kalorienTrackerQuick_v1";
+
+function iso(o=0){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-o);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+const ds=()=>Array.from({length:10},(_,i)=>iso(i));
 let state=(()=>{try{return JSON.parse(localStorage.getItem(KEY))||{goal:1700,days:{}}}catch(e){return{goal:1700,days:{}}}})(),selected=iso();
+
 const defaultQuick=[
 {name:"Schwarzer Kaffee",kcal:2,unit:"Tasse",category:"Getränk"},
-{name:"SHEKO Shake",kcal:215,unit:"Portion",category:"Snack"},
+{name:"SHEKO Standardshake",kcal:202,unit:"Portion",category:"Getränk"},
 {name:"Armer Ritter",kcal:220,unit:"Scheibe",category:"Snack"},
 {name:"Gin Tonic",kcal:110,unit:"Glas",category:"Getränk"},
 {name:"Spaghetti Bolognese",kcal:650,unit:"Portion",category:"Abendessen"},
 {name:"Magerquark 0,2 %",kcal:67,unit:"100 g",category:"Snack"}
 ];
 let quickItems=(()=>{try{const q=JSON.parse(localStorage.getItem(QUICK_KEY));return Array.isArray(q)?q:defaultQuick}catch(e){return defaultQuick}})();
+quickItems=quickItems.map(q=>q.name==="SHEKO Shake"&&Number(q.kcal)===215?{name:"SHEKO Standardshake",kcal:202,unit:"Portion",category:"Getränk"}:q);
 function saveQuick(){localStorage.setItem(QUICK_KEY,JSON.stringify(quickItems))}
 function renderQuick(){
- const box=document.getElementById("quickList"); if(!box)return;
- box.innerHTML="";
- if(!quickItems.length){
-   const empty=document.createElement("div");empty.className="notice";empty.textContent="Keine Schnell hinzufügen Einträge mehr gespeichert.";box.appendChild(empty);return;
- }
+ const box=$("quickList");box.innerHTML="";
+ if(!quickItems.length){const e=document.createElement("div");e.className="notice";e.textContent="Keine Schnell hinzufügen Einträge gespeichert.";box.appendChild(e);return}
  quickItems.forEach((q,i)=>{
-   const row=document.createElement("div");row.className="quickItem";
-   const addBtn=document.createElement("button");addBtn.type="button";addBtn.className="quickAdd";addBtn.textContent=q.name+" · "+Math.round(q.kcal)+" kcal";
-   addBtn.onclick=()=>add(q.name,q.kcal,q.category,1,q.unit);
-   const trash=document.createElement("button");trash.type="button";trash.className="quickTrash";trash.textContent="🗑";trash.setAttribute("aria-label",q.name+" aus Schnell hinzufügen löschen");
-   trash.onclick=()=>{quickItems.splice(i,1);saveQuick();renderQuick()};
-   row.append(addBtn,trash);box.appendChild(row);
- });
+  const row=document.createElement("div");row.className="quickItem";
+  const addBtn=document.createElement("button");addBtn.type="button";addBtn.className="quickAdd";addBtn.textContent=q.name+" · "+Math.round(q.kcal)+" kcal";addBtn.onclick=()=>add(q.name,q.kcal,q.category,1,q.unit);
+  const trash=document.createElement("button");trash.type="button";trash.className="quickTrash";trash.textContent="🗑";trash.setAttribute("aria-label",q.name+" löschen");trash.onclick=()=>{quickItems.splice(i,1);saveQuick();renderQuick()};
+  row.append(addBtn,trash);box.appendChild(row)
+ })
 }
 function save(){const keep={};ds().forEach(d=>keep[d]=state.days[d]||[]);state.days=keep;localStorage.setItem(KEY,JSON.stringify(state))}
-function arr(d=selected){return state.days[d]||(state.days[d]=[])}function lt(e){return(Number(e.qty)||0)*(Number(e.kcalEach)||0)}function total(d=selected){return arr(d).reduce((s,e)=>s+lt(e),0)}
+function arr(d=selected){return state.days[d]||(state.days[d]=[])}
+function lt(e){return(Number(e.qty)||0)*(Number(e.kcalEach)||0)}
+function total(d=selected){return arr(d).reduce((s,e)=>s+lt(e),0)}
 function fd(s,short=false){const[y,m,d]=s.split("-").map(Number),x=new Date(y,m-1,d,12);return new Intl.DateTimeFormat("de-DE",short?{day:"2-digit",month:"2-digit"}:{weekday:"long",day:"2-digit",month:"2-digit",year:"numeric"}).format(x)}
-function net(){const on=navigator.onLine;$("net").textContent=(on?"● ":"○ ")+(on?"Internet bereit":"Offline");$("net").style.background=on?"var(--mint)":"var(--rose)"}addEventListener("online",net);addEventListener("offline",net);net();
+function dateLabelForTop(){return selected===iso()?"Heute · "+fd(selected,false):fd(selected,false)}
+function net(){const on=navigator.onLine;$("net").textContent=(on?"● ":"○ ")+(on?"Internet bereit":"Offline");$("net").style.background=on?"var(--mint)":"var(--rose)"}
+addEventListener("online",net);addEventListener("offline",net);net();
 
 const foods=[
-["hähnchenbrustfilet",165],["hähnchenbrust",165],["hähnchenfilet",165],["putenbrust",135],["lachs",208],["magerquark",67],["skyr",63],["griechischer joghurt 1,5",75],["milch 1,5",47],["milch 3,5",64],["kartoffeln",77],["kartoffel",77],["möhren",41],["karotten",41],["brokkoli",34],["kürbis",30],["reis gekocht",130],["reis",130],["spaghetti gekocht",155],["nudeln gekocht",155],["rinderhack",250],["hackfleisch",250],["tomaten",18],["tomate",18],["gurke",15],["paprika",31],["olivenöl",884],["butter",717],["käse",350],["chiasamen",486],["walnüsse",654],["müsli",450],["brot",250]
+{n:"Hähnchenbrust",a:["hähnchenbrustfilet","hähnchenbrust","hähnchenfilet","haehnchenbrust","haehnchenfilet"],k:165},
+{n:"Hähnchenkeule",a:["hähnchenkeule","hähnchenunterkeule","haehnchenkeule"],k:215},
+{n:"Putenbrust",a:["putenbrust","putenfilet"],k:135},{n:"Rindfleisch",a:["rindersteak","rindfleisch"],k:190},
+{n:"Rinderhack",a:["rinderhack","hackfleisch rind"],k:250},{n:"Hackfleisch gemischt",a:["gemischtes hackfleisch","hackfleisch gemischt"],k:260},
+{n:"Schweinefilet",a:["schweinefilet"],k:143},{n:"Lachs",a:["lachsfilet","lachs"],k:208},{n:"Thunfisch",a:["thunfisch natur","thunfisch im eigenen saft"],k:116},
+{n:"Garnelen",a:["garnelen","shrimps"],k:99},{n:"Ei",a:["hühnerei","ei"],k:143,piece:80},
+{n:"Magerquark",a:["magerquark","quark 0,2","quark 0.2"],k:67,el:15,tl:5},
+{n:"Skyr",a:["skyr natur","skyr"],k:63,el:15,tl:5},{n:"Joghurt 1,5 %",a:["joghurt 1,5","joghurt 1.5"],k:60,el:15,tl:5},
+{n:"Griechischer Joghurt 1,5 %",a:["griechischer joghurt 1,5","griechischer joghurt 1.5"],k:75,el:15,tl:5},
+{n:"Griechischer Joghurt 10 %",a:["griechischer joghurt 10","griechischer joghurt 10%"],k:133,el:15,tl:5},
+{n:"Milch 1,5 %",a:["milch 1,5","milch 1.5","fettarme milch"],k:47,el:15,tl:5},
+{n:"Milch 3,5 %",a:["milch 3,5","milch 3.5","vollmilch"],k:64,el:15,tl:5},
+{n:"Haferdrink",a:["haferdrink","hafermilch"],k:46,el:15,tl:5},{n:"Mandeldrink ungesüßt",a:["mandeldrink ungesusst","mandelmilch ungesusst","mandeldrink ungezuckert"],k:13,el:15,tl:5},
+{n:"Sojadrink ungesüßt",a:["sojadrink ungesusst","sojamilch ungesusst"],k:33,el:15,tl:5},
+{n:"Kartoffeln gekocht",a:["gekochte kartoffeln","kartoffeln gekocht","kartoffel gekocht","kartoffeln"],k:77},
+{n:"Süßkartoffel",a:["susskartoffel","süßkartoffel"],k:86},{n:"Reis gekocht",a:["reis gekocht","gekochter reis","basmatireis gekocht"],k:130},
+{n:"Nudeln gekocht",a:["nudeln gekocht","pasta gekocht","spaghetti gekocht","gekochte nudeln"],k:155},
+{n:"Couscous gekocht",a:["couscous gekocht","couscous"],k:112},{n:"Bulgur gekocht",a:["bulgur gekocht","bulgur"],k:83},
+{n:"Haferflocken",a:["haferflocken"],k:372,el:10,tl:3.5},{n:"Müsli",a:["nussmüsli","nussmuesli","müsli","muesli"],k:450,el:10,tl:3.5},
+{n:"Brot",a:["vollkornbrot","mischbrot","brot"],k:240},{n:"Toast",a:["toastbrot","toast"],k:265,piece:80},{n:"Brötchen",a:["brötchen","broetchen"],k:270,piece:160},
+{n:"Olivenöl",a:["olivenöl","olivenoel"],k:884,el:13.5,tl:4.5},{n:"Rapsöl",a:["rapsöl","rapsoel"],k:884,el:13.5,tl:4.5},
+{n:"Butter",a:["butter"],k:717,el:14,tl:5},{n:"Frischkäse",a:["frischkäse","frischkaese"],k:250,el:15,tl:5},
+{n:"Weichkäse",a:["weichkäse","weichkaese","camembert","brie"],k:300},{n:"Feta",a:["feta","hirtenkäse","hirtenkaese"],k:265},
+{n:"Gouda",a:["gouda"],k:356},{n:"Parmesan",a:["parmesan"],k:431},
+{n:"Tomate",a:["tomaten","tomate"],k:18},{n:"Gurke",a:["salatgurke","gurke"],k:15},{n:"Paprika",a:["paprika"],k:31},
+{n:"Brokkoli",a:["brokkoli"],k:34},{n:"Blumenkohl",a:["blumenkohl"],k:25},{n:"Zucchini",a:["zucchini"],k:17},{n:"Aubergine",a:["aubergine"],k:25},
+{n:"Karotte",a:["möhren","moehren","karotten","karotte"],k:41},{n:"Kürbis",a:["hokkaido","kürbis","kuerbis"],k:30},{n:"Rote Bete",a:["rote bete","rote beete"],k:43},
+{n:"Spinat",a:["spinat"],k:23},{n:"Champignons",a:["champignons","pilze"],k:22},{n:"Mais",a:["mais"],k:86},{n:"Erbsen",a:["erbsen"],k:81},
+{n:"Avocado",a:["avocado"],k:160},{n:"Apfel",a:["apfel"],k:52,piece:80},{n:"Banane",a:["banane"],k:89,piece:105},
+{n:"Orange",a:["orange","apfelsine"],k:47,piece:70},{n:"Birne",a:["birne"],k:57,piece:100},{n:"Erdbeeren",a:["erdbeeren"],k:32},
+{n:"Heidelbeeren",a:["blaubeeren","heidelbeeren"],k:57},{n:"Trauben",a:["weintrauben","trauben"],k:69},
+{n:"Walnüsse",a:["walnüsse","walnuesse"],k:654,el:8,tl:3},{n:"Mandeln",a:["mandeln"],k:579,el:9,tl:3},
+{n:"Chiasamen",a:["chiasamen","chia"],k:486,el:12,tl:4},{n:"Leinsamen",a:["leinsamen"],k:534,el:10,tl:3},
+{n:"Honig",a:["honig"],k:304,el:21,tl:7},{n:"Zucker",a:["zucker"],k:400,el:12,tl:4},
+{n:"Ketchup",a:["ketchup"],k:112,el:15,tl:5},{n:"Mayonnaise",a:["mayonnaise","mayo"],k:680,el:15,tl:5}
 ];
-const pieces=[["apfel",80],["banane",105],["ei",80],["kaffee",2],["gin tonic",110],["sheko",215],["hähnchenunterkeule",160]];
-const dishes=[["spaghetti bolognese",650,450],["lasagne",650,400],["carbonara",720,420],["currywurst mit pommes",900,450],["currywurst",520,260],["schnitzel mit pommes",950,500],["schnitzel",520,250],["döner",700,450],["gemüsepizza",750,350],["pizza margherita",800,350],["chili con carne",550,400],["risotto",600,400],["gulasch",550,400],["linsensuppe",350,400],["armer ritter",220,100]];
-function norm(s){return String(s||"").toLowerCase().replace(/ä/g,"ä").replace(/,/g,".").replace(/s+/g," ").trim()}
-function detect(t){const m=t.match(/(d+(?:[.,]d+)?)s*(el|esslöffel|eßlöffel|tl|teelöffel|g|gramm|ml|milliliter|portion(?:en)?|stück|stueck|glas)/i);if(!m)return null;let u=m[2].toLowerCase();if(/^(el|esslöffel|eßlöffel)$/.test(u))u="EL";else if(/^(tl|teelöffel)$/.test(u))u="TL";else if(/^(g|gramm)$/.test(u))u="g";else if(/^(ml|milliliter)$/.test(u))u="ml";else if(u.startsWith("portion"))u="Portion";else if(/stück|stueck/.test(u))u="Stück";else u="Glas";return{q:num(m[1]),u}}
-function localEstimate(text,qty,unit){
- const t=norm(text);let bestDish=null;for(const d of dishes)if(t.includes(d[0])&&(!bestDish||d[0].length>bestDish[0].length))bestDish=d;
- if(bestDish){const grams=unit==="g"||unit==="ml"?qty:unit==="EL"?qty*15:unit==="TL"?qty*5:null;return grams?{k:bestDish[1]/bestDish[2]*grams,n:bestDish[0]}:{k:bestDish[1]*qty,n:bestDish[0]}}
- let sum=0,h=[];const all=[...foods].sort((a,b)=>b[0].length-a[0].length),used=[];
- for(const f of all){const key=f[0],idx=t.indexOf(key);if(idx<0)continue;if(used.some(([a,b])=>idx>=a&&idx<b))continue;const chunk=t.slice(Math.max(0,idx-28),idx+key.length+28);const m=chunk.match(/(d+(?:.d+)?)s*(el|tl|g|gramm|ml|milliliter)/i);if(m){let a=Number(m[1]),u=m[2].toLowerCase(),g=a;if(u==="el")g=a*(key.includes("öl")?13.5:key.includes("chia")?12:15);else if(u==="tl")g=a*(key.includes("öl")?4.5:key.includes("chia")?4:5);sum+=g/100*f[1];h.push(key);used.push([idx,idx+key.length])}}
- for(const p of pieces.sort((a,b)=>b[0].length-a[0].length)){const idx=t.indexOf(p[0]);if(idx<0)continue;const chunk=t.slice(Math.max(0,idx-18),idx+p[0].length+12),m=chunk.match(/(d+(?:.d+)?)s*(x|stück|stueck|scheibe|glas|tasse)?/i);const c=m?Number(m[1]):1;sum+=c*p[1];h.push(p[0])}
- return{k:sum,n:h.join(", ")}
+
+const dishes=[
+{a:["spaghetti bolognese","spaghetti mit bolognese"],k:650,g:450},
+{a:["lasagne","lasagna"],k:650,g:400},{a:["spaghetti carbonara","carbonara"],k:720,g:420},
+{a:["currywurst mit pommes","currywurst pommes"],k:900,g:450},{a:["currywurst"],k:520,g:260},
+{a:["schnitzel mit pommes","schnitzel pommes"],k:950,g:500},{a:["schnitzel"],k:520,g:250},
+{a:["döner","doener"],k:700,g:450},{a:["pizza margherita","margherita"],k:800,g:350},
+{a:["gemüsepizza","gemuesepizza","vegetarische pizza"],k:750,g:350},{a:["pizza salami"],k:900,g:360},
+{a:["chili con carne"],k:550,g:400},{a:["risotto"],k:600,g:400},{a:["gulasch"],k:550,g:400},
+{a:["linsensuppe"],k:350,g:400},{a:["kartoffelsuppe"],k:300,g:400},{a:["erbsensuppe"],k:450,g:400},
+{a:["caesar salad","caesar salat"],k:600,g:400},{a:["gemischter salat mit dressing","salat mit dressing"],k:300,g:350},
+{a:["cheeseburger"],k:700,g:300},{a:["hamburger","burger"],k:620,g:280},{a:["pommes","pommes frites"],k:450,g:150},
+{a:["kartoffelgratin"],k:500,g:350},{a:["kartoffelsalat"],k:400,g:300},{a:["armer ritter"],k:220,g:100}
+];
+
+const shekoOfficial={
+ "kaffee":{powder:408,portion:202,label:"Kaffee"},
+ "espresso":{powder:405,portion:202,label:"Espresso"},
+ "schokolade":{powder:406,portion:202,label:"Schokolade"},
+ "double chocolate":{powder:406,portion:202,label:"Double Chocolate"},
+ "tropical vanilla":{powder:402,portion:201,label:"Tropical Vanilla"},
+ "weisse schokolade pistazie":{powder:410,portion:202,label:"Weiße Schokolade Pistazie"},
+ "pistazie":{powder:410,portion:202,label:"Pistazie"}
+};
+function amountUnit(segment){
+ const m=String(segment).match(/(\d+(?:[.,]\d+)?)\s*(kg|g|gramm|ml|cl|l|el|esslöffel|eßlöffel|tl|teelöffel|stück|stueck|scheibe|glas|tasse|portion(?:en)?)\b/i);
+ if(!m)return null;let q=num(m[1]),u=m[2].toLowerCase();
+ if(u==="kg"){q*=1000;u="g"}else if(u==="cl"){q*=10;u="ml"}else if(u==="l"){q*=1000;u="ml"}else if(["esslöffel","eßlöffel"].includes(u))u="el";else if(u==="teelöffel")u="tl";
+ return{q,u}
 }
-async function offSearch(text){if(!navigator.onLine)return null;try{const r=await fetch("https://world.openfoodfacts.org/cgi/search.pl?search_terms="+encodeURIComponent(text)+"&search_simple=1&action=process&json=1&page_size=5");if(!r.ok)return null;const j=await r.json(),p=(j.products||[]).find(x=>Number(x.nutriments?.["energy-kcal_100g"])>0);return p?{k100:Number(p.nutriments["energy-kcal_100g"]),name:p.product_name||p.generic_name||"Open Food Facts"}:null}catch(e){return null}}
-async function estimate(){const text=$("text").value.trim();if(!text){msg("Bitte Beschreibung eingeben.");return}const d=detect(text);if(d&&$("amount").value==="1"&&$("unit").value==="Portion"){$("amount").value=String(d.q).replace(".",",");$("unit").value=d.u}
- const q=Math.max(.01,num($("amount").value)||1),u=$("unit").value,l=localEstimate(text,q,u);$("estimate").disabled=true;$("estimateInfo").style.display="block";$("estimateInfo").textContent="Schätzung läuft …";
- let k=Math.round(l.k||0),note=l.k?("Lokal erkannt: "+l.n+" → ca. "+k+" kcal."):"";
- const off=await offSearch(text);if(!k&&off){let grams=u==="g"||u==="ml"?q:u==="EL"?q*15:u==="TL"?q*5:350*q;k=Math.round(off.k100*grams/100);note="Open Food Facts: "+off.name+", "+Math.round(off.k100)+" kcal/100 g → ca. "+k+" kcal."}
- if(k)$("kcal").value=k;else note="Keine sichere Schätzung. Bitte genauer beschreiben oder Kalorien manuell eintragen.";$("estimateInfo").textContent=note;$("estimate").disabled=false}
+function gramsFor(q,u,food){if(u==="g"||u==="ml")return q;if(u==="el")return q*(food?.el||15);if(u==="tl")return q*(food?.tl||5);return null}
+function bestFood(segment){
+ const t=clean(segment);let best=null;
+ for(const f of foods)for(const alias of f.a){const a=clean(alias);if(t.includes(a)&&(!best||a.length>best.len))best={food:f,len:a.length}}
+ return best?.food||null
+}
+function bestDish(text){
+ const t=clean(text);let best=null;
+ for(const d of dishes)for(const alias of d.a){const a=clean(alias);if(t.includes(a)&&(!best||a.length>best.len))best={dish:d,len:a.length}}
+ return best?.dish||null
+}
+function shekoEstimate(text){
+ const t=clean(text);if(!t.includes("sheko"))return null;
+ let flavor=null;
+ for(const [name,v] of Object.entries(shekoOfficial))if(t.includes(clean(name))){flavor=v;break}
+ flavor=flavor||{powder:406,portion:202,label:"SHEKO"};
+ const powder=t.match(/(\d+(?:[.,]\d+)?)\s*g(?:ramm)?\s*(?:sheko|pulver)?/i)||t.match(/sheko[^0-9]{0,20}(\d+(?:[.,]\d+)?)\s*g/i);
+ const m15=t.match(/(\d+(?:[.,]\d+)?)\s*ml[^.]{0,35}(?:milch\s*1[,.]5|1[,.]5\s*%?\s*milch|fettarme milch)/i);
+ const m35=t.match(/(\d+(?:[.,]\d+)?)\s*ml[^.]{0,35}(?:milch\s*3[,.]5|3[,.]5\s*%?\s*milch|vollmilch)/i);
+ const quark=t.match(/(\d+(?:[.,]\d+)?)\s*g[^.]{0,25}(?:magerquark)/i);
+ const jog=t.match(/(\d+(?:[.,]\d+)?)\s*g[^.]{0,25}(?:joghurt\s*1[,.]5|fettarmer joghurt)/i);
+ const oat=t.match(/(\d+(?:[.,]\d+)?)\s*ml[^.]{0,25}(?:haferdrink|hafermilch)/i);
+ const pg=powder?num(powder[1]):18;
+ if(m15){const ml=num(m15[1]);if(Math.abs(pg-18)<.01&&Math.abs(ml-275)<.01)return{k:flavor.portion,source:"SHEKO offiziell",detail:flavor.label+" · 18 g + 275 ml Milch 1,5 %"};return{k:pg*flavor.powder/100+ml*.47,source:"SHEKO offiziell + BLS-Milchwert",detail:flavor.label}}
+ if(m35){const ml=num(m35[1]);return{k:pg*flavor.powder/100+ml*.64,source:"SHEKO offiziell + BLS-Milchwert",detail:flavor.label}}
+ if(quark&&Math.abs(pg-18)<.01&&Math.abs(num(quark[1])-200)<.01)return{k:219,source:"SHEKO offiziell",detail:flavor.label+" · 18 g + 200 g Magerquark"};
+ if(jog&&Math.abs(pg-18)<.01&&Math.abs(num(jog[1])-200)<.01)return{k:203,source:"SHEKO offiziell",detail:flavor.label+" · 18 g + 200 g Joghurt 1,5 %"};
+ if(oat&&Math.abs(pg-18)<.01&&Math.abs(num(oat[1])-275)<.01)return{k:183,source:"SHEKO offiziell",detail:flavor.label+" · 18 g + 275 ml Haferdrink"};
+ if(powder)return{k:pg*flavor.powder/100,source:"SHEKO offiziell",detail:flavor.label+" Pulver"};
+ if(t.includes("sheko"))return{k:flavor.portion,source:"SHEKO offiziell",detail:flavor.label+" Standardportion"};
+ return null
+}
+function localEstimate(text,globalQty,globalUnit){
+ const she=shekoEstimate(text);if(she)return she;
+ const dish=bestDish(text);
+ if(dish){
+  const grams=["g","ml"].includes(globalUnit)?globalQty:globalUnit==="EL"?globalQty*15:globalUnit==="TL"?globalQty*5:null;
+  return{k:grams?dish.k/dish.g*grams:dish.k*globalQty,source:"Deutsche Gerichtsschätzung",detail:dish.a[0]}
+ }
+ const segments=String(text).split(/\s*(?:\+|,|;|\bund\b|\bmit\b)\s*/i).filter(Boolean);
+ let sum=0,details=[];
+ for(const seg of segments){
+   const food=bestFood(seg);if(!food)continue;
+   const au=amountUnit(seg);let k=0;
+   if(au){
+     const grams=gramsFor(au.q,au.u,food);
+     if(grams!==null)k=grams*food.k/100;
+     else if(["stück","stueck","scheibe","glas","tasse","portion","portionen"].includes(au.u)&&food.piece)k=au.q*food.piece;
+   }else if(food.piece){
+     const m=seg.match(/\b(\d+(?:[.,]\d+)?)\b/);k=(m?num(m[1]):1)*food.piece;
+   }else if(segments.length===1){
+     const grams=gramsFor(globalQty,globalUnit.toLowerCase(),food);
+     if(grams!==null)k=grams*food.k/100;else if(globalUnit==="Stück"&&food.piece)k=globalQty*food.piece;
+   }
+   if(k>0){sum+=k;details.push(food.n+" "+Math.round(k)+" kcal")}
+ }
+ return sum>0?{k:sum,source:"BLS 4.0 / deutsche Referenzwerte",detail:details.join(" + ")}:null
+}
+function searchText(text){return clean(text).replace(/\b\d+(?:[.,]\d+)?\s*(kg|g|gramm|ml|cl|l|el|tl|esslöffel|eßlöffel|teelöffel|stück|stueck|scheibe|glas|tasse|portion(?:en)?)\b/g," ").replace(/\b(mit|und|ca|circa)\b/g," ").replace(/\s+/g," ").trim()}
+function tokenScore(query,name,brands){const q=clean(query).split(" ").filter(x=>x.length>2),hay=clean((name||"")+" "+(brands||""));if(!q.length)return 0;let s=0;q.forEach(t=>{if(hay.includes(t))s++});return s/q.length}
+async function openFoodFactsDE(text){
+ if(!navigator.onLine)return null;const q=searchText(text);if(!q)return null;
+ try{
+   const r=await fetch("https://de.openfoodfacts.org/cgi/search.pl?search_terms="+encodeURIComponent(q)+"&search_simple=1&action=process&json=1&page_size=12",{headers:{Accept:"application/json"}});
+   if(!r.ok)return null;const j=await r.json();
+   const candidates=(j.products||[]).map(p=>({p,k:Number(p.nutriments?.["energy-kcal_100g"]),score:tokenScore(q,p.product_name,p.brands)})).filter(x=>x.k>0&&x.k<1000&&x.score>=.34).sort((a,b)=>b.score-a.score);
+   if(!candidates.length)return null;const x=candidates[0],p=x.p;return{k100:x.k,name:p.product_name||p.generic_name||q,brands:p.brands||""}
+ }catch(e){return null}
+}
+async function estimate(){
+ const text=$("text").value.trim();if(!text){msg("Bitte Beschreibung eingeben.");return}
+ const detected=amountUnit(text);
+ if(detected&&$("amount").value==="1"&&$("unit").value==="Portion"){
+   $("amount").value=String(detected.q).replace(".",",");
+   const map={g:"g",ml:"ml",el:"EL",tl:"TL","stück":"Stück",stueck:"Stück",glas:"Glas",portion:"Portion",portionen:"Portion"};if(map[detected.u])$("unit").value=map[detected.u]
+ }
+ const q=Math.max(.01,num($("amount").value)||1),u=$("unit").value;
+ $("estimate").disabled=true;$("estimate").textContent="Schätze …";$("estimateInfo").style.display="block";$("estimateInfo").textContent="BLS, SHEKO und deutsche Produktdaten werden geprüft …";
+ const local=localEstimate(text,q,u);
+ let final=local?Math.round(local.k):0,note=local?local.detail+" → ca. "+final+" kcal.":"",source=local?.source||"";
+ const branded=/\b(rewe|ja!|aldi|lidl|milbona|gut & günstig|gutfried|iglo|dr oetker|frosta|haribo|kinder|ferrero|müller|mueller|protein|high protein|to go)\b/i.test(text);
+ const off=(!local||branded)?await openFoodFactsDE(text):null;
+ if(off){
+   const grams=["g","ml"].includes(u)?q:u==="EL"?q*15:u==="TL"?q*5:100*q,offK=Math.round(off.k100*grams/100);
+   if(!final||branded){final=offK;note=(off.brands?off.brands+" · ":"")+off.name+" · "+Math.round(off.k100)+" kcal/100 g → ca. "+final+" kcal.";source="Open Food Facts DE"}
+ }
+ if(final>0)$("kcal").value=final;else note="Noch keine belastbare Schätzung. Bitte Menge und Lebensmittel genauer angeben, z. B. „180 g Hähnchenbrust“.";
+ $("estimateInfo").innerHTML="<div>"+note+"</div><div class='sourceLine'>Quelle: "+(source||"keine sichere Zuordnung")+"</div>";
+ $("estimate").disabled=false;$("estimate").textContent="🌐 Kalorien schätzen"
+}
 function msg(t){$("msg").style.display="block";$("msg").textContent=t}
-function render(){const g=Number(state.goal)||1700,e=total(),r=g-e,p=Math.round(e/g*100);$("goal").value=g;$("goalText").textContent=fmt(g);$("eaten").textContent=fmt(e);$("rest").textContent=r>=0?fmt(r):"−"+fmt(Math.abs(r));$("pct").textContent=p+"%";$("progress").style.width=clamp(p,0,100)+"%";$("status").textContent=r>=0?"Du hast noch "+fmt(r)+" kcal.":"Du liegst "+fmt(Math.abs(r))+" kcal über deinem Ziel.";$("dateLabel").textContent=fd(selected);$("dayTotal").textContent=fmt(e);$("dayRest").textContent=r>=0?fmt(r):"−"+fmt(Math.abs(r));
- const used=ds().filter(d=>(state.days[d]||[]).length);$("avg").textContent=fmt(used.length?used.reduce((s,d)=>s+total(d),0)/used.length:0);$("days").innerHTML="";ds().forEach((d,i)=>{const b=document.createElement("button");b.textContent=i===0?"Heute":fd(d,true);if(d===selected)b.classList.add("active");b.onclick=()=>{selected=d;render()};$("days").appendChild(b)});
- $("list").innerHTML="";const a=arr();$("empty").style.display=a.length?"none":"block";a.forEach((x,i)=>{const row=document.createElement("div");row.className="meal";row.innerHTML='<div class="mealTop"><div class="grow"><div class="mealName"></div><div class="meta"></div></div><div class="mealKcal"></div></div><div class="qty"></div>';row.querySelector(".mealName").textContent=x.name;row.querySelector(".meta").textContent=x.category+" · "+Math.round(x.kcalEach*10)/10+" kcal je "+x.unit;row.querySelector(".mealKcal").textContent=fmt(lt(x))+" kcal";const q=row.querySelector(".qty"),mi=document.createElement("button"),inp=document.createElement("input"),pl=document.createElement("button"),ut=document.createElement("span"),ap=document.createElement("button"),del=document.createElement("button");mi.textContent="−";pl.textContent="+";inp.value=String(x.qty).replace(".",",");inp.inputMode="decimal";ut.textContent=x.unit;ap.textContent="✓";ap.className="tiny apply";ap.setAttribute("aria-label","Menge übernehmen");ap.title="Menge übernehmen";del.textContent="Löschen";del.className="tiny delete danger";const st=()=>["g","ml"].includes(x.unit)?25:["EL","TL"].includes(x.unit)?1:.5,upd=v=>{const n=num(v);if(!Number.isFinite(n)||n<=0)return alert("Ungültige Menge");x.qty=n;save();render()};mi.onclick=()=>upd(Math.max(.01,x.qty-st()));pl.onclick=()=>upd(x.qty+st());ap.onclick=()=>upd(inp.value);inp.onkeydown=e=>{if(e.key==="Enter")upd(inp.value)};del.onclick=()=>{a.splice(i,1);save();render()};q.append(mi,inp,pl,ut,ap,del);$("list").appendChild(row)});save()}
+function render(){
+ const g=Number(state.goal)||1700,e=total(),r=g-e,p=Math.round(e/g*100);
+ $("goal").value=g;$("goalText").textContent=fmt(g);$("goalDate").textContent="📅 "+dateLabelForTop();
+ $("eaten").textContent=fmt(e);$("rest").textContent=r>=0?fmt(r):"−"+fmt(Math.abs(r));$("pct").textContent=p+"%";$("progress").style.width=clamp(p,0,100)+"%";
+ $("status").textContent=r>=0?"Du hast noch "+fmt(r)+" kcal.":"Du liegst "+fmt(Math.abs(r))+" kcal über deinem Ziel.";
+ $("footerSub").textContent=fmt(g)+" kcal · 10 Tage · deutsche Schätzung · EL/TL · offline speicherbar";
+ $("dateLabel").textContent=fd(selected);$("dayTotal").textContent=fmt(e);$("dayRest").textContent=r>=0?fmt(r):"−"+fmt(Math.abs(r));
+ const used=ds().filter(d=>(state.days[d]||[]).length);$("avg").textContent=fmt(used.length?used.reduce((s,d)=>s+total(d),0)/used.length:0);
+ $("days").innerHTML="";ds().forEach((d,i)=>{const b=document.createElement("button");b.textContent=i===0?"Heute":fd(d,true);if(d===selected)b.classList.add("active");b.onclick=()=>{selected=d;render()};$("days").appendChild(b)});
+ $("list").innerHTML="";const a=arr();$("empty").style.display=a.length?"none":"block";
+ a.forEach((x,i)=>{
+  const row=document.createElement("div");row.className="meal";row.innerHTML='<div class="mealTop"><div class="grow"><div class="mealName"></div><div class="meta"></div></div><div class="mealKcal"></div></div><div class="qty"></div>';
+  row.querySelector(".mealName").textContent=x.name;row.querySelector(".meta").textContent=x.category+" · "+Math.round(x.kcalEach*10)/10+" kcal je "+x.unit;row.querySelector(".mealKcal").textContent=fmt(lt(x))+" kcal";
+  const qr=row.querySelector(".qty"),mi=document.createElement("button"),inp=document.createElement("input"),pl=document.createElement("button"),ut=document.createElement("span"),ap=document.createElement("button"),del=document.createElement("button");
+  mi.textContent="−";pl.textContent="+";inp.value=String(x.qty).replace(".",",");inp.inputMode="decimal";ut.textContent=x.unit;ap.textContent="✓";ap.className="tiny apply";ap.setAttribute("aria-label","Menge übernehmen");del.textContent="Löschen";del.className="tiny delete danger";
+  const st=()=>["g","ml"].includes(x.unit)?25:["EL","TL"].includes(x.unit)?1:.5,upd=v=>{const n=num(v);if(!Number.isFinite(n)||n<=0)return alert("Ungültige Menge");x.qty=n;save();render()};
+  mi.onclick=()=>upd(Math.max(.01,x.qty-st()));pl.onclick=()=>upd(x.qty+st());ap.onclick=()=>upd(inp.value);inp.onkeydown=e=>{if(e.key==="Enter")upd(inp.value)};del.onclick=()=>{a.splice(i,1);save();render()};
+  qr.append(mi,inp,pl,ut,ap,del);$("list").appendChild(row)
+ });
+ save()
+}
 function add(n,k,c,q,u){q=Math.max(.01,num(q)||1);k=Number(k);if(!n.trim()||!k)return false;arr().push({name:n.trim(),qty:q,unit:u,kcalEach:k/q,category:c});save();render();return true}
 function dl(name,text,type="text/csv"){const b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 function csv(one=null){const rows=[["Datum","Kategorie","Mahlzeit","Menge","Einheit","Kalorien"]],list=one?[one]:ds().slice().reverse();list.forEach(d=>(state.days[d]||[]).forEach(e=>rows.push([d,e.category,e.name,e.qty,e.unit,Math.round(lt(e))])));return"\uFEFF"+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\r\n")}
-$("goal").onchange=e=>{state.goal=clamp(Number(e.target.value)||1700,800,5000);save();render()};$("estimate").onclick=estimate;$("add").onclick=()=>{if(!add($("text").value,$("kcal").value,$("cat").value,$("amount").value,$("unit").value))return msg("Bitte Mahlzeit und Kalorien eintragen.");$("text").value="";$("kcal").value="";$("amount").value="1";$("unit").value="Portion";$("estimateInfo").style.display="none"};
-$("export").onclick=()=>dl("kalorien-10-tage.csv",csv());$("backup").onclick=()=>dl("kalorien-backup.json",JSON.stringify({state,exportedAt:new Date().toISOString()},null,2),"application/json");$("clear").onclick=()=>{if(!arr().length)return;dl("kalorien-"+selected+".csv",csv(selected));setTimeout(()=>{if(confirm("Backup gespeichert. Tag leeren?")){state.days[selected]=[];save();render()}},120)};
-ds().forEach(d=>{if(!state.days[d])state.days[d]=[]});save();render();renderQuick();
+
+$("goal").onchange=e=>{state.goal=clamp(Number(e.target.value)||1700,800,5000);save();render()};
+$("estimate").onclick=estimate;
+$("add").onclick=()=>{if(!add($("text").value,$("kcal").value,$("cat").value,$("amount").value,$("unit").value))return msg("Bitte Mahlzeit und Kalorien eintragen.");$("text").value="";$("kcal").value="";$("amount").value="1";$("unit").value="Portion";$("estimateInfo").style.display="none"};
+$("export").onclick=()=>dl("kalorien-10-tage.csv",csv());
+$("backup").onclick=()=>dl("kalorien-backup.json",JSON.stringify({state,quickItems,exportedAt:new Date().toISOString()},null,2),"application/json");
+$("clear").onclick=()=>{if(!arr().length)return;if(confirm("Den ausgewählten Tag wirklich leeren?")){state.days[selected]=[];save();render()}};
+
+ds().forEach(d=>{if(!state.days[d])state.days[d]=[]});save();saveQuick();render();renderQuick();
 if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
 })();
-</script></body></html>
+</script>
+</body></html>
